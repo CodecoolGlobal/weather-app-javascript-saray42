@@ -1,5 +1,7 @@
 # Weather App
 
+# by Sarah and Martin
+
 ## Story
 
 People Always Talk About The Weather...
