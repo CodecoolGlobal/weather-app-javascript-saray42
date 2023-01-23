@@ -17,15 +17,19 @@ window.addEventListener("load", () => {
     input.setAttribute("placeholder", "input city");
 
     const favButton = document.createElement("button");
-    favButton.setAttribute("for", "input-city");
     favButton.setAttribute("type", "button");
     favButton.innerText = "Favourite";
+
+    const resetButton = document.createElement("button");
+    resetButton.setAttribute("type", "button");
+    resetButton.innerText = "Reset";
 
     const form = document.createElement("form");
     form.setAttribute("action", "");
 
     form.appendChild(input);
     form.appendChild(favButton);
+    form.appendChild(resetButton);
 
     const datalist = document.createElement("datalist");
     datalist.setAttribute("id", "city-list");
@@ -64,6 +68,11 @@ window.addEventListener("load", () => {
         if (input.value.includes(cityList) && !favCities.includes(input.value)) {
             favCities.push(input.value);
         }
+    });
+
+    resetButton.addEventListener("click", () => {
+        removeAllChildNodes(datalist);
+        favCities = [];
     });
 });
 
