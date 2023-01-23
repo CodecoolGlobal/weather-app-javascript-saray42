@@ -1,0 +1,17 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#root {
+    height: 100vh;
+    display: grid;
+    grid-template: minmax(0, 1fr) / 1fr;
+    place-items: center;
+}
+
+#root > input {
+    width: 25%;
+    grid-column: 1 / 1;
+    grid-row: 1 / 1;
+}
