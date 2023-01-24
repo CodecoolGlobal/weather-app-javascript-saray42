@@ -17,6 +17,9 @@ let isChrome = navigator.userAgent.match(/chrome|chromium|crios/i);
 const rootElement = document.querySelector("#root");
 
 window.addEventListener("load", () => {
+    const panelElement = document.createElement("div");
+    panelElement.setAttribute("id", "panel");
+
     const inputCity = document.createElement("input");
     inputCity.setAttribute("id", "input-city");
     inputCity.setAttribute("type", "text");
@@ -41,7 +44,8 @@ window.addEventListener("load", () => {
 
     rootElement.insertAdjacentElement("beforeend", datalist);
     rootElement.insertAdjacentElement("afterbegin", inputDiv);
-
+    rootElement.insertAdjacentElement("afterbegin", panelElement);
+    
     inputCity.addEventListener("input", async () => {
         inputCity.value = capitalizeFirstLetter(inputCity.value);
         removeAllChildNodes(datalist);
