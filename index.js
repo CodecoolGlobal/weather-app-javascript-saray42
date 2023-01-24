@@ -118,6 +118,11 @@ function displayWeatherData(parsedData) {
     console.log(parsedData.current.condition.text);
     console.log(parsedData.current.wind_kph);
     console.log(parsedData.current.humidity);
+    console.log(parsedData.location.localtime);
+    console.log(parsedData.current.wind_dir);
+    console.log(parsedData.current.feelslike_c);
+    console.log(parsedData.current.last_updated);
+    // icon, city, country
 
     const panelElement = document.querySelector("#panel");
 
@@ -127,6 +132,12 @@ function displayWeatherData(parsedData) {
     const tempElement = document.createElement("p");
     tempElement.innerHTML = `${parsedData.current.temp_c}°C`;
 
+    const icon = document.createElement("img");
+    icon.setAttribute("src", parsedData.current.condition.icon);
+
     panelElement.insertAdjacentElement("beforeend", cityHeadline)
     panelElement.insertAdjacentElement("beforeend", tempElement);
+    panelElement.insertAdjacentElement("beforeend", icon)
+
+
 }
