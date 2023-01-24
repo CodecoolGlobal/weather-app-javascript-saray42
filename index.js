@@ -1,8 +1,9 @@
 "use strict"
 
-import { capitalCities } from "./cities.js";
+const key = "7dec3eb1df3441718f3102729232401";
+let apiAutocomplete = `http://api.weatherapi.com/v1/search.json?key=${key}&q=`;
 
-let cities = capitalCities;
+let cities = null;
 
 let cityList = new Array;
 
@@ -26,29 +27,28 @@ window.addEventListener("load", () => {
     resetButton.setAttribute("type", "button");
     resetButton.innerText = "Reset";
 
-    const inputForm = document.createElement("div");
+    const inputDiv = document.createElement("div");
 
-    inputForm.appendChild(inputCity);
-    inputForm.appendChild(favButton);
-    inputForm.appendChild(resetButton);
+    inputDiv.appendChild(inputCity);
+    inputDiv.appendChild(favButton);
+    inputDiv.appendChild(resetButton);
 
     const datalist = document.createElement("datalist");
     datalist.setAttribute("id", "city-list");
 
     rootElement.insertAdjacentElement("beforeend", datalist);
-    rootElement.insertAdjacentElement("afterbegin", inputForm);
+    rootElement.insertAdjacentElement("afterbegin", inputDiv);
 
     inputCity.addEventListener("input", () => {
         inputCity.value = capitalizeFirstLetter(inputCity.value);
         removeAllChildNodes(datalist);
         cityList = [];
         if (inputCity.value.length >= 3) {
+            apiSearch(inputCity.value);
             inputCity.setAttribute("list", "city-list");
 
-            cities.filter((city) => {
-                if (city.includes(inputCity.value)) {
-                    cityList.push(city)
-                }
+            cities.map((city) => {
+                cityList.push(city.name);
             });
 
             cityList.map((city) => {
@@ -75,7 +75,7 @@ window.addEventListener("load", () => {
     });
 
     favButton.addEventListener("click", () => {
-        if (inputCity.value.includes(cityList) && !favCities.includes(inputCity.value)) {
+        if (cityList.includes(inputCity.value) && !favCities.includes(inputCity.value)) {
             favCities.push(inputCity.value);
         }
     });
@@ -94,4 +94,10 @@ function removeAllChildNodes(parent) {
 
 function capitalizeFirstLetter(word) {
     return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+function apiSearch(input) {
+    fetch(apiAutocomplete + input)
+    .then(response => response.json())
+    .then(data => cities = data);
 }
