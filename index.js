@@ -118,6 +118,9 @@ function displayWeatherData(parsedData) {
     console.log(parsedData.current.condition.text);
     console.log(parsedData.current.wind_kph);
     console.log(parsedData.current.humidity);
+
+    const panelElement = document.querySelector("#panel");
+
     const cityHeadline = document.createElement("h1");
     cityHeadline.innerHTML = parsedData.location.name + ", " + parsedData.location.country;
 
