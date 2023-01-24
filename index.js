@@ -16,6 +16,7 @@ window.addEventListener("load", () => {
     inputCity.setAttribute("id", "input-city");
     inputCity.setAttribute("type", "text");
     inputCity.setAttribute("placeholder", "input city");
+    inputCity.setAttribute("list", "city-list");
 
     const favButton = document.createElement("button");
     favButton.setAttribute("type", "button");
@@ -42,7 +43,6 @@ window.addEventListener("load", () => {
         removeAllChildNodes(datalist);
         if (inputCity.value.length >= 3) {
             await apiSearch(inputCity.value);
-            inputCity.setAttribute("list", "city-list");
 
             cities.map((city) => {
                 const option = document.createElement("option");
