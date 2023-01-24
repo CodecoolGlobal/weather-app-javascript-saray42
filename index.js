@@ -3,9 +3,14 @@
 const key = "7dec3eb1df3441718f3102729232401";
 let apiAutocomplete = `http://api.weatherapi.com/v1/search.json?key=${key}&q=`;
 
+const apiWeatherPath = "http://api.weatherapi.com/v1/current.json"
+const apiWeatherKey = "6f45d8fb0b634570a17115149232301";
+
 let cities = null;
 
 let favCities = new Array;
+
+let chosenCity;
 
 let isChrome = navigator.userAgent.match(/chrome|chromium|crios/i);
 
@@ -61,6 +66,10 @@ window.addEventListener("load", () => {
 
     inputCity.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
+            chosenCity = inputCity.value;
+            fetch(`${apiWeatherPath}?key=${apiWeatherKey}&q=${chosenCity}&aqi=no`)
+                .then(data => data.json())
+                .then(parsedData => displayWeatherData(parsedData))
             inputCity.value = "";
             inputCity.blur();
             return false;
@@ -97,4 +106,11 @@ const apiSearch = async (input) => {
     const fetchedData = await fetch(apiAutocomplete + input);
     const parsedData = await fetchedData.json();
     cities = await parsedData;
+}
+
+function displayWeatherData(parsedData) {
+    console.log(parsedData.current.temp_c);
+    console.log(parsedData.current.condition.text);
+    console.log(parsedData.current.wind_kph);
+    console.log(parsedData.current.humidity)
 }
