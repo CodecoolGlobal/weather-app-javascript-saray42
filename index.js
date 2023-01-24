@@ -118,4 +118,12 @@ function displayWeatherData(parsedData) {
     console.log(parsedData.current.condition.text);
     console.log(parsedData.current.wind_kph);
     console.log(parsedData.current.humidity);
+    const cityHeadline = document.createElement("h1");
+    cityHeadline.innerHTML = parsedData.location.name + ", " + parsedData.location.country;
+
+    const tempElement = document.createElement("p");
+    tempElement.innerHTML = `${parsedData.current.temp_c}°C`;
+
+    panelElement.insertAdjacentElement("beforeend", cityHeadline)
+    panelElement.insertAdjacentElement("beforeend", tempElement);
 }
