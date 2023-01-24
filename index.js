@@ -8,7 +8,7 @@ let cityList = new Array;
 
 let favCities = new Array;
 
-let isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+let isChrome = navigator.userAgent.match(/chrome|chromium|crios/i);
 
 const rootElement = document.querySelector("#root");
 
