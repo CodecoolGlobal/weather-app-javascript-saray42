@@ -8,13 +8,15 @@ let cityList = new Array;
 
 let favCities = new Array;
 
+let isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+
 const rootElement = document.querySelector("#root");
 
 window.addEventListener("load", () => {
-    const input = document.createElement("input");
-    input.setAttribute("id", "input-city");
-    input.setAttribute("type", "text");
-    input.setAttribute("placeholder", "input city");
+    const inputCity = document.createElement("input");
+    inputCity.setAttribute("id", "input-city");
+    inputCity.setAttribute("type", "text");
+    inputCity.setAttribute("placeholder", "input city");
 
     const favButton = document.createElement("button");
     favButton.setAttribute("type", "button");
@@ -24,27 +26,27 @@ window.addEventListener("load", () => {
     resetButton.setAttribute("type", "button");
     resetButton.innerText = "Reset";
 
-    const form = document.createElement("form");
-    form.setAttribute("action", "");
+    const inputForm = document.createElement("div");
 
-    form.appendChild(input);
-    form.appendChild(favButton);
-    form.appendChild(resetButton);
+    inputForm.appendChild(inputCity);
+    inputForm.appendChild(favButton);
+    inputForm.appendChild(resetButton);
 
     const datalist = document.createElement("datalist");
     datalist.setAttribute("id", "city-list");
 
     rootElement.insertAdjacentElement("beforeend", datalist);
-    rootElement.insertAdjacentElement("afterbegin", form);
+    rootElement.insertAdjacentElement("afterbegin", inputForm);
 
-    input.addEventListener("input", () => {
+    inputCity.addEventListener("input", () => {
+        inputCity.value = capitalizeFirstLetter(inputCity.value);
         removeAllChildNodes(datalist);
         cityList = [];
-        if (input.value.length >= 3) {
-            input.setAttribute("list", "city-list");
+        if (inputCity.value.length >= 3) {
+            inputCity.setAttribute("list", "city-list");
 
             cities.filter((city) => {
-                if (city.includes(input.value)) {
+                if (city.includes(inputCity.value)) {
                     cityList.push(city)
                 }
             });
@@ -58,15 +60,23 @@ window.addEventListener("load", () => {
             favCities.map((favCity) => {
                 const option = document.createElement("option");
                 option.setAttribute("value", favCity);
-                option.setAttribute("label", "Favourite");
+                isChrome ? option.setAttribute("label", "Favourite") : option.setAttribute("label", "* " + favCity);
                 datalist.appendChild(option);
             });
         }
     });
 
+    inputCity.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            inputCity.value = "";
+            inputCity.blur();
+            return false;
+        }
+    });
+
     favButton.addEventListener("click", () => {
-        if (input.value.includes(cityList) && !favCities.includes(input.value)) {
-            favCities.push(input.value);
+        if (inputCity.value.includes(cityList) && !favCities.includes(inputCity.value)) {
+            favCities.push(inputCity.value);
         }
     });
 
@@ -80,4 +90,8 @@ function removeAllChildNodes(parent) {
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
     }
+}
+
+function capitalizeFirstLetter(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
 }
