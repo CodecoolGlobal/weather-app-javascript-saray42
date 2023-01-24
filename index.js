@@ -5,8 +5,6 @@ let apiAutocomplete = `http://api.weatherapi.com/v1/search.json?key=${key}&q=`;
 
 let cities = null;
 
-let cityList = new Array;
-
 let favCities = new Array;
 
 let isChrome = navigator.userAgent.match(/chrome|chromium|crios/i);
@@ -42,18 +40,13 @@ window.addEventListener("load", () => {
     inputCity.addEventListener("input", () => {
         inputCity.value = capitalizeFirstLetter(inputCity.value);
         removeAllChildNodes(datalist);
-        cityList = [];
-        if (inputCity.value.length >= 3) {
+        if (inputCity.value.length > 2) {
             apiSearch(inputCity.value);
             inputCity.setAttribute("list", "city-list");
 
             cities.map((city) => {
-                cityList.push(city.name);
-            });
-
-            cityList.map((city) => {
                 const option = document.createElement("option");
-                option.setAttribute("value", city);
+                option.setAttribute("value", city.name);
                 datalist.appendChild(option);
             });
         } else {
@@ -75,7 +68,10 @@ window.addEventListener("load", () => {
     });
 
     favButton.addEventListener("click", () => {
-        if (cityList.includes(inputCity.value) && !favCities.includes(inputCity.value)) {
+
+        console.log(cities.includes(inputCity.value));
+
+        if (cities.includes(inputCity.value) && !favCities.includes(inputCity.value)) {
             favCities.push(inputCity.value);
         }
     });
@@ -86,7 +82,7 @@ window.addEventListener("load", () => {
     });
 });
 
-function removeAllChildNodes(parent) {
+const removeAllChildNodes = (parent) => {
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
     }
