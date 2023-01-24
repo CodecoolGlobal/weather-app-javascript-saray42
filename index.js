@@ -1,7 +1,7 @@
 "use strict"
 
-const key = "7dec3eb1df3441718f3102729232401";
-let apiAutocomplete = `http://api.weatherapi.com/v1/search.json?key=${key}&q=`;
+const apiAutocompPath = "http://api.weatherapi.com/v1/search.json";
+const apiAutoCompKey = "7dec3eb1df3441718f3102729232401";
 
 const apiWeatherPath = "http://api.weatherapi.com/v1/current.json"
 const apiWeatherKey = "6f45d8fb0b634570a17115149232301";
@@ -9,8 +9,6 @@ const apiWeatherKey = "6f45d8fb0b634570a17115149232301";
 let cities = null;
 
 let favCities = new Array;
-
-let chosenCity;
 
 let isChrome = navigator.userAgent.match(/chrome|chromium|crios/i);
 
@@ -24,6 +22,7 @@ window.addEventListener("load", () => {
     inputCity.setAttribute("id", "input-city");
     inputCity.setAttribute("type", "text");
     inputCity.setAttribute("placeholder", "input city");
+    inputCity.setAttribute("list", "city-list");
 
     const favButton = document.createElement("button");
     favButton.setAttribute("type", "button");
@@ -50,8 +49,7 @@ window.addEventListener("load", () => {
         inputCity.value = capitalizeFirstLetter(inputCity.value);
         removeAllChildNodes(datalist);
         if (inputCity.value.length >= 3) {
-            await apiSearch(inputCity.value);
-            inputCity.setAttribute("list", "city-list");
+            await apiAutocomplete(inputCity.value);
 
             cities.map((city) => {
                 const option = document.createElement("option");
@@ -70,10 +68,7 @@ window.addEventListener("load", () => {
 
     inputCity.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
-            chosenCity = inputCity.value;
-            fetch(`${apiWeatherPath}?key=${apiWeatherKey}&q=${chosenCity}&aqi=no`)
-                .then(data => data.json())
-                .then(parsedData => displayWeatherData(parsedData))
+            apiCitySearch(inputCity.value);
             inputCity.value = "";
             inputCity.blur();
             return false;
@@ -106,15 +101,21 @@ const capitalizeFirstLetter = (word) => {
     return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
-const apiSearch = async (input) => {
-    const fetchedData = await fetch(apiAutocomplete + input);
+const apiAutocomplete = async (input) => {
+    const fetchedData = await fetch(apiAutocompPath + "?key=" + apiAutoCompKey + "&q=" + input);
     const parsedData = await fetchedData.json();
     cities = await parsedData;
+}
+
+const apiCitySearch = async (input) => {
+    const fetchedData = await fetch(apiWeatherPath + "?key=" + apiWeatherKey + "&q=" + input);
+    const parsedData = await fetchedData.json();
+    displayWeatherData(parsedData);
 }
 
 function displayWeatherData(parsedData) {
     console.log(parsedData.current.temp_c);
     console.log(parsedData.current.condition.text);
     console.log(parsedData.current.wind_kph);
-    console.log(parsedData.current.humidity)
+    console.log(parsedData.current.humidity);
 }
