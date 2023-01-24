@@ -37,11 +37,11 @@ window.addEventListener("load", () => {
     rootElement.insertAdjacentElement("beforeend", datalist);
     rootElement.insertAdjacentElement("afterbegin", inputDiv);
 
-    inputCity.addEventListener("input", () => {
+    inputCity.addEventListener("input", async () => {
         inputCity.value = capitalizeFirstLetter(inputCity.value);
         removeAllChildNodes(datalist);
-        if (inputCity.value.length > 2) {
-            apiSearch(inputCity.value);
+        if (inputCity.value.length >= 3) {
+            await apiSearch(inputCity.value);
             inputCity.setAttribute("list", "city-list");
 
             cities.map((city) => {
@@ -68,10 +68,11 @@ window.addEventListener("load", () => {
     });
 
     favButton.addEventListener("click", () => {
+        let checkForCity = cities.filter((city) => {
+            return (city.name === inputCity.value);
+        });
 
-        console.log(cities.includes(inputCity.value));
-
-        if (cities.includes(inputCity.value) && !favCities.includes(inputCity.value)) {
+        if (checkForCity.length === 1 && !favCities.includes(inputCity.value)) {
             favCities.push(inputCity.value);
         }
     });
@@ -88,12 +89,12 @@ const removeAllChildNodes = (parent) => {
     }
 }
 
-function capitalizeFirstLetter(word) {
+const capitalizeFirstLetter = (word) => {
     return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
-function apiSearch(input) {
-    fetch(apiAutocomplete + input)
-    .then(response => response.json())
-    .then(data => cities = data);
+const apiSearch = async (input) => {
+    const fetchedData = await fetch(apiAutocomplete + input);
+    const parsedData = await fetchedData.json();
+    cities = await parsedData;
 }
