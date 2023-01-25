@@ -23,7 +23,7 @@ body {
     grid-column: 1 / 1;
     grid-row: 1 / 1;
     height: 65vh;
-    width: clamp(5%, 25%, 50%);
+    width: clamp(10%, 30%, 60%);
     display: grid;
     grid-template: minmax(0, 75%) minmax(0, 25%) / 1fr; 
     place-items: center;
@@ -82,4 +82,23 @@ body {
 
 #input-field:focus {
     box-shadow: 0 0 15px 0 var(--boxShadow);
+}
+
+#panel {
+    display: grid;
+    grid-template: auto / 1fr;
+    font-size: clamp(0em, 1.5em, 2em);
+    grid-gap: 15px;
+}
+
+#city {
+    grid-row: 1 / 1;
+    grid-column: 1 / 1;
+    place-self: center start;
+}
+
+#condition-icon {
+    grid-row: 1 / 1;
+    grid-column: 1 / 1;
+    place-self: center end;
 }

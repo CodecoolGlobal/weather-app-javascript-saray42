@@ -129,28 +129,28 @@ const displayWeatherData = (parsedData) => {
             type: "text"
         },
         {
+            id: "local-time",
+            insert: "Localtime: " + parsedData.location.localtime,
+            type: "text"
+        },
+        {
             id: "temp-c",
-            insert: parsedData.current.temp_c + "°C",
+            insert: "Temperature: " + parsedData.current.temp_c + "°C",
             type: "text"
         },
         {
             id: "cloud-status",
-            insert: parsedData.current.condition.text,
+            insert: "Clouds: " + parsedData.current.condition.text,
             type: "text"
         },
         {
-            id: "cloud-speed",
-            insert: parsedData.current.wind_kph + "km/h",
+            id: "wind-speed",
+            insert: "Wind speed: " +parsedData.current.wind_kph + " km/h",
             type: "text"
         },
         {
             id: "humidity",
-            insert: parsedData.current.humidity + "%",
-            type: "text"
-        },
-        {
-            id: "local-time",
-            insert: parsedData.location.localtime,
+            insert: "Humidity: " + parsedData.current.humidity + "%",
             type: "text"
         },
         {
@@ -159,10 +159,6 @@ const displayWeatherData = (parsedData) => {
             type: "img"
         }
     ];
-
-    console.log(parsedData.current.wind_dir);
-    console.log(parsedData.current.feelslike_c);
-    // icon, city, country
 
     const panelElement = document.querySelector("#panel");
 
