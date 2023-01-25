@@ -160,11 +160,11 @@ const picSearch = async (input) => {
     parsedData.error ? windwosXp : parsedData.photos.length === 0 ? windwosXp : displayCityPic(parsedData);
     setTimeout(() => {
         document.querySelector("#loader").setAttribute("style", "display: none !important");
-    }, 2000);
+    }, 5000);
 }
 
 const displayCityPic = (obj) => {
-    const randIndex = Math.floor(Math.random() * obj.photos.length);
+    const randIndex = Math.round(Math.random() * obj.photos.length);
     const body = document.querySelector("body");
     body.style.setProperty("background", `url(${obj.photos[randIndex].src.landscape}) no-repeat`);
     body.style.setProperty("background-size", "cover");
@@ -179,7 +179,10 @@ const displayError = (error) => {
     let errorMsg = document.createElement("p");
     errorMsg.innerText = error.error.message;
 
-    panelElement.appendChild(errorMsg);    
+    panelElement.appendChild(errorMsg);
+    setTimeout(() => {
+        document.querySelector("#loader").setAttribute("style", "display: none !important");
+    }, 5000); 
 }
 
 const displayWeatherData = async (parsedData) => {
@@ -201,7 +204,7 @@ const displayWeatherData = async (parsedData) => {
         },
         {
             id: "wind-speed",
-            data: "Wind: " +parsedData.current.wind_kph + " km/h",
+            data: "Wind: " + parsedData.current.wind_kph + " km/h",
             type: "text"
         },
         {
