@@ -121,31 +121,63 @@ const apiCitySearch = async (input) => {
     }
 }
 
-function displayWeatherData(parsedData) {
-    console.log(parsedData.current.temp_c);
-    console.log(parsedData.current.condition.text);
-    console.log(parsedData.current.wind_kph);
-    console.log(parsedData.current.humidity);
-    console.log(parsedData.location.localtime);
+const displayWeatherData = (parsedData) => {
+    let weatherElements = [
+        {
+            id: "city",
+            insert: parsedData.location.name + ", " + parsedData.location.country,
+            type: "text"
+        },
+        {
+            id: "temp-c",
+            insert: parsedData.current.temp_c + "°C",
+            type: "text"
+        },
+        {
+            id: "cloud-status",
+            insert: parsedData.current.condition.text,
+            type: "text"
+        },
+        {
+            id: "cloud-speed",
+            insert: parsedData.current.wind_kph + "km/h",
+            type: "text"
+        },
+        {
+            id: "humidity",
+            insert: parsedData.current.humidity + "%",
+            type: "text"
+        },
+        {
+            id: "local-time",
+            insert: parsedData.location.localtime,
+            type: "text"
+        },
+        {
+            id: "condition-icon",
+            insert: parsedData.current.condition.icon,
+            type: "img"
+        }
+    ];
+
     console.log(parsedData.current.wind_dir);
     console.log(parsedData.current.feelslike_c);
-    console.log(parsedData.current.last_updated);
     // icon, city, country
 
     const panelElement = document.querySelector("#panel");
 
-    const cityHeadline = document.createElement("h1");
-    cityHeadline.innerHTML = parsedData.location.name + ", " + parsedData.location.country;
+    removeAllChildNodes(panelElement);
 
-    const tempElement = document.createElement("p");
-    tempElement.innerHTML = `${parsedData.current.temp_c}°C`;
-
-    const icon = document.createElement("img");
-    icon.setAttribute("src", parsedData.current.condition.icon);
-
-    panelElement.insertAdjacentElement("beforeend", cityHeadline)
-    panelElement.insertAdjacentElement("beforeend", tempElement);
-    panelElement.insertAdjacentElement("beforeend", icon)
-
-
+    weatherElements.map((element) => {
+        let weatherInfo = null;
+        if (element.type === "text") {
+            weatherInfo = document.createElement("p");
+            weatherInfo.innerText = element.insert;
+        } else {
+            weatherInfo = document.createElement("img");
+            weatherInfo.setAttribute("src", element.insert)
+        }
+        weatherInfo.setAttribute("id", element.id);
+        panelElement.appendChild(weatherInfo);
+    });
 }
