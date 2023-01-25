@@ -3,7 +3,7 @@
 const apiAutocompPath = "http://api.weatherapi.com/v1/search.json";
 const apiAutoCompKey = "7dec3eb1df3441718f3102729232401";
 
-const apiWeatherPath = "http://api.weatherapi.com/v1/current.json"
+const apiWeatherPath = "http://api.weatherapi.com/v1/current.json";
 const apiWeatherKey = "6f45d8fb0b634570a17115149232301";
 
 let cities = null;
@@ -112,50 +112,52 @@ const apiAutocomplete = async (input) => {
 }
 
 const apiCitySearch = async (input) => {
-    try {
-        const fetchedData = await fetch(apiWeatherPath + "?key=" + apiWeatherKey + "&q=" + input);
-        const parsedData = await fetchedData.json();
-        displayWeatherData(parsedData);
-    } catch (error) {
-        if (error) console.log(error);
-    }
+    const fetchedData = await fetch(apiWeatherPath + "?key=" + apiWeatherKey + "&q=" + input);
+    const parsedData = await fetchedData.json();
+    parsedData.error ? displayError(parsedData) : displayWeatherData(parsedData);
+}
+
+const displayError = (error) => {
+    const panelElement = document.querySelector("#panel");
+
+    removeAllChildNodes(panelElement);
+
+    let errorMsg = document.createElement("p");
+    errorMsg.innerText = error.error.message;
+
+    panelElement.appendChild(errorMsg);    
 }
 
 const displayWeatherData = (parsedData) => {
     let weatherElements = [
         {
             id: "city",
-            insert: parsedData.location.name + ", " + parsedData.location.country,
+            data: parsedData.location.name,
             type: "text"
         },
         {
             id: "local-time",
-            insert: "Localtime: " + parsedData.location.localtime,
+            data: "Localtime: " + parsedData.location.localtime,
             type: "text"
         },
         {
             id: "temp-c",
-            insert: "Temperature: " + parsedData.current.temp_c + "°C",
-            type: "text"
-        },
-        {
-            id: "cloud-status",
-            insert: "Clouds: " + parsedData.current.condition.text,
+            data: parsedData.current.temp_c + "°C " + parsedData.current.condition.text,
             type: "text"
         },
         {
             id: "wind-speed",
-            insert: "Wind speed: " +parsedData.current.wind_kph + " km/h",
+            data: "Wind: " +parsedData.current.wind_kph + " km/h",
             type: "text"
         },
         {
             id: "humidity",
-            insert: "Humidity: " + parsedData.current.humidity + "%",
+            data: "Humidity: " + parsedData.current.humidity + "%",
             type: "text"
         },
         {
             id: "condition-icon",
-            insert: parsedData.current.condition.icon,
+            data: parsedData.current.condition.icon,
             type: "img"
         }
     ];
@@ -168,10 +170,10 @@ const displayWeatherData = (parsedData) => {
         let weatherInfo = null;
         if (element.type === "text") {
             weatherInfo = document.createElement("p");
-            weatherInfo.innerText = element.insert;
+            weatherInfo.innerText = element.data;
         } else {
             weatherInfo = document.createElement("img");
-            weatherInfo.setAttribute("src", element.insert)
+            weatherInfo.setAttribute("src", element.data)
         }
         weatherInfo.setAttribute("id", element.id);
         panelElement.appendChild(weatherInfo);
