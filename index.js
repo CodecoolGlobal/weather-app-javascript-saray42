@@ -18,23 +18,26 @@ window.addEventListener("load", () => {
     const panelElement = document.createElement("div");
     panelElement.setAttribute("id", "panel");
 
-    const inputCity = document.createElement("input");
-    inputCity.setAttribute("id", "input-city");
-    inputCity.setAttribute("type", "text");
-    inputCity.setAttribute("placeholder", "input city");
-    inputCity.setAttribute("list", "city-list");
+    const inputField = document.createElement("input");
+    inputField.setAttribute("id", "input-field");
+    inputField.setAttribute("type", "text");
+    inputField.setAttribute("placeholder", "input city");
+    inputField.setAttribute("list", "city-list");
 
     const favButton = document.createElement("button");
     favButton.setAttribute("type", "button");
+    favButton.setAttribute("id", "favButton");
     favButton.innerText = "Favourite";
 
     const resetButton = document.createElement("button");
     resetButton.setAttribute("type", "button");
+    favButton.setAttribute("id", "resButton");
     resetButton.innerText = "Reset";
 
     const inputDiv = document.createElement("div");
+    inputDiv.setAttribute("id", "input-div");
 
-    inputDiv.appendChild(inputCity);
+    inputDiv.appendChild(inputField);
     inputDiv.appendChild(favButton);
     inputDiv.appendChild(resetButton);
 
@@ -45,18 +48,19 @@ window.addEventListener("load", () => {
     rootElement.insertAdjacentElement("afterbegin", inputDiv);
     rootElement.insertAdjacentElement("afterbegin", panelElement);
     
-    inputCity.addEventListener("input", async () => {
-        inputCity.value = capitalizeFirstLetter(inputCity.value);
+    inputField.addEventListener("input", async () => {
+        inputField.value = capitalizeFirstLetter(inputField.value);
         removeAllChildNodes(datalist);
-        if (inputCity.value.length >= 3) {
-            await apiAutocomplete(inputCity.value);
+        cities = [];
+        if (inputField.value.length >= 3) {
+            await apiAutocomplete(inputField.value);
 
             cities.map((city) => {
                 const option = document.createElement("option");
                 option.setAttribute("value", city.name);
                 datalist.appendChild(option);
             });
-        } else {
+        } else if (inputField.value === "" || inputField.value.length === 0) {
             favCities.map((favCity) => {
                 const option = document.createElement("option");
                 option.setAttribute("value", favCity);
@@ -66,22 +70,22 @@ window.addEventListener("load", () => {
         }
     });
 
-    inputCity.addEventListener("keydown", (event) => {
+    inputField.addEventListener("keydown", async (event) => {
         if (event.key === "Enter") {
-            apiCitySearch(inputCity.value);
-            inputCity.value = "";
-            inputCity.blur();
+            await apiCitySearch(inputField.value);
+            inputField.value = "";
+            inputField.blur();
             return false;
         }
     });
 
     favButton.addEventListener("click", () => {
         let checkForCity = cities.filter((city) => {
-            return (city.name === inputCity.value);
+            return (city.name === inputField.value);
         });
 
-        if (checkForCity.length === 1 && !favCities.includes(inputCity.value)) {
-            favCities.push(inputCity.value);
+        if (checkForCity.length === 1 && !favCities.includes(inputField.value)) {
+            favCities.push(inputField.value);
         }
     });
 
@@ -108,9 +112,13 @@ const apiAutocomplete = async (input) => {
 }
 
 const apiCitySearch = async (input) => {
-    const fetchedData = await fetch(apiWeatherPath + "?key=" + apiWeatherKey + "&q=" + input);
-    const parsedData = await fetchedData.json();
-    displayWeatherData(parsedData);
+    try {
+        const fetchedData = await fetch(apiWeatherPath + "?key=" + apiWeatherKey + "&q=" + input);
+        const parsedData = await fetchedData.json();
+        displayWeatherData(parsedData);
+    } catch (error) {
+        if (error) console.log(error);
+    }
 }
 
 function displayWeatherData(parsedData) {
