@@ -56,7 +56,7 @@ window.addEventListener("load", () => {
         removeAllChildNodes(datalist);
         cities = [];
         if (inputField.value.length >= 3) {
-            await apiAutocomplete(inputField.value);
+            await autocomplete(inputField.value);
 
             let existingOpts = Array.from(document.querySelectorAll("option")).map(value => { return value.value });
 
@@ -68,12 +68,7 @@ window.addEventListener("load", () => {
                 }
             });
         } else if (inputField.value === "" || inputField.value.length === 0) {
-            favCities.map((favCity) => {
-                const option = document.createElement("option");
-                option.setAttribute("value", favCity);
-                isChrome ? option.setAttribute("label", "Favourite") : option.setAttribute("label", "Fav | " + favCity);
-                datalist.appendChild(option);
-            });
+            mapFavCities();
         }
     });
 
@@ -81,22 +76,19 @@ window.addEventListener("load", () => {
         removeAllChildNodes(datalist);
         cities = [];
         if (inputField.value === "" || inputField.value.length === 0) {
-            favCities.map((favCity) => {
-                const option = document.createElement("option");
-                option.setAttribute("value", favCity);
-                isChrome ? option.setAttribute("label", "Favourite") : option.setAttribute("label", "Fav | " + favCity);
-                datalist.appendChild(option);
-            });
+            mapFavCities();
         }
     });
 
     inputField.addEventListener("keydown", async (event) => {
         if (event.key === "Enter") {
-            await apiCitySearch(inputField.value);
-            await apitCityPicSearch(inputField.value);
+            await citySearch(inputField.value);
+            await picSearch(inputField.value);
             inputField.value = "";
             inputField.blur();
             return false;
+        } else if (event.key === "Backspace" && inputField.value === "") {
+            mapFavCities();
         }
     });
 
@@ -114,6 +106,19 @@ window.addEventListener("load", () => {
         removeAllChildNodes(datalist);
         favCities = [];
     });
+
+    const mapFavCities = () => {
+        removeAllChildNodes(datalist);
+        cities = [];
+        if (inputField.value === "" || inputField.value.length === 0) {
+            favCities.map((favCity) => {
+                const option = document.createElement("option");
+                option.setAttribute("value", favCity);
+                isChrome ? option.setAttribute("label", "Favourite") : option.setAttribute("label", "Fav | " + favCity);
+                datalist.appendChild(option);
+            });
+        }
+    }
 });
 
 const removeAllChildNodes = (parent) => {
@@ -126,22 +131,23 @@ const capitalizeFirstLetter = (word) => {
     return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
-const apiAutocomplete = async (input) => {
+const autocomplete = async (input) => {
     const fetchedData = await fetch(apiAutocompPath + "?key=" + apiAutoCompKey + "&q=" + input);
     const parsedData = await fetchedData.json();
     cities = await parsedData;
 }
 
-const apiCitySearch = async (input) => {
+const citySearch = async (input) => {
     const fetchedData = await fetch(apiWeatherPath + "?key=" + apiWeatherKey + "&q=" + input);
     const parsedData = await fetchedData.json();
     parsedData.error ? displayError(parsedData) : displayWeatherData(parsedData);
 }
 
-const apitCityPicSearch = async (input) => {
+const picSearch = async (input) => {
+    let windwosXp = document.querySelector("body").style.background = "url('./xp.jpg')";
     const fetchedData = await fetch(apiPexelsPath + input, {headers: {Authorization: apiPexelsKey}})
     const parsedData = await fetchedData.json();
-    parsedData.photos.length === 0 ? displayDefaultCityPic() : displayCityPic(parsedData);
+    parsedData.error ? windwosXp : parsedData.photos.length === 0 ? windwosXp : displayCityPic(parsedData);
 }
 
 const displayError = (error) => {
@@ -207,16 +213,7 @@ const displayWeatherData = (parsedData) => {
     });
 }
 
-
-function displayCityPic(obj) {
-    document.querySelector("body").style.background = `url(${getRandomCityPic(obj.photos)})`;
-}
-
-function getRandomCityPic(arr) {
-    let randIndex = Math.floor(Math.random() * arr.length);
-    return arr[randIndex].src.landscape;
-}
-
-function displayDefaultCityPic() {
-    document.querySelector("body").style.background = "url('./xp.jpg')";
+const displayCityPic = (obj) => {
+    let randIndex = Math.floor(Math.random() * obj.photos.length);
+    document.querySelector("body").style.background = `url(${obj.photos[randIndex].src.landscape})`;
 }
