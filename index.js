@@ -55,16 +55,33 @@ window.addEventListener("load", () => {
         if (inputField.value.length >= 3) {
             await apiAutocomplete(inputField.value);
 
+            let existingOpts = Array.from(document.querySelectorAll("option")).map(value => { return value.value });
+
             cities.map((city) => {
-                const option = document.createElement("option");
-                option.setAttribute("value", city.name);
-                datalist.appendChild(option);
+                if (!existingOpts.includes(city.name)) {
+                    const option = document.createElement("option");
+                    option.setAttribute("value", city.name);
+                    datalist.appendChild(option);
+                }
             });
         } else if (inputField.value === "" || inputField.value.length === 0) {
             favCities.map((favCity) => {
                 const option = document.createElement("option");
                 option.setAttribute("value", favCity);
-                isChrome ? option.setAttribute("label", "Favourite") : option.setAttribute("label", "* " + favCity);
+                isChrome ? option.setAttribute("label", "Favourite") : option.setAttribute("label", "Fav | " + favCity);
+                datalist.appendChild(option);
+            });
+        }
+    });
+
+    inputField.addEventListener("focus", () => {
+        removeAllChildNodes(datalist);
+        cities = [];
+        if (inputField.value === "" || inputField.value.length === 0) {
+            favCities.map((favCity) => {
+                const option = document.createElement("option");
+                option.setAttribute("value", favCity);
+                isChrome ? option.setAttribute("label", "Favourite") : option.setAttribute("label", "Fav | " + favCity);
                 datalist.appendChild(option);
             });
         }
@@ -132,7 +149,7 @@ const displayWeatherData = (parsedData) => {
     let weatherElements = [
         {
             id: "city",
-            data: parsedData.location.name,
+            data: parsedData.location.name + ", " + parsedData.location.country,
             type: "text"
         },
         {
