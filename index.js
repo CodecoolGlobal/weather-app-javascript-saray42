@@ -81,9 +81,8 @@ window.addEventListener("load", () => {
     });
 
     inputField.addEventListener("keydown", async (event) => {
-        if (event.key === "Enter") {
+        if (event.key === "Enter" && inputField.value.length > 0) {
             await citySearch(inputField.value);
-            await picSearch(inputField.value);
             inputField.value = "";
             inputField.blur();
             return false;
@@ -144,10 +143,18 @@ const citySearch = async (input) => {
 }
 
 const picSearch = async (input) => {
-    let windwosXp = document.querySelector("body").style.background = "url('./xp.jpg')";
+    let windwosXp = document.querySelector("body").style.setProperty("background", "url('./xp.jpg')");
     const fetchedData = await fetch(apiPexelsPath + input, {headers: {Authorization: apiPexelsKey}})
     const parsedData = await fetchedData.json();
     parsedData.error ? windwosXp : parsedData.photos.length === 0 ? windwosXp : displayCityPic(parsedData);
+}
+
+const displayCityPic = (obj) => {
+    const randIndex = Math.floor(Math.random() * obj.photos.length);
+    const body = document.querySelector("body");
+    body.style.setProperty("background", `url(${obj.photos[randIndex].src.landscape}) no-repeat`);
+    body.style.setProperty("background-size", "cover");
+    body.style.setProperty("background-position", "center");
 }
 
 const displayError = (error) => {
@@ -161,7 +168,7 @@ const displayError = (error) => {
     panelElement.appendChild(errorMsg);    
 }
 
-const displayWeatherData = (parsedData) => {
+const displayWeatherData = async (parsedData) => {
     let weatherElements = [
         {
             id: "city",
@@ -211,9 +218,6 @@ const displayWeatherData = (parsedData) => {
         weatherInfo.setAttribute("id", element.id);
         panelElement.appendChild(weatherInfo);
     });
-}
 
-const displayCityPic = (obj) => {
-    let randIndex = Math.floor(Math.random() * obj.photos.length);
-    document.querySelector("body").style.background = `url(${obj.photos[randIndex].src.landscape})`;
+    await picSearch(parsedData.location.name);
 }
