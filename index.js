@@ -6,6 +6,9 @@ const apiAutoCompKey = "7dec3eb1df3441718f3102729232401";
 const apiWeatherPath = "http://api.weatherapi.com/v1/current.json";
 const apiWeatherKey = "6f45d8fb0b634570a17115149232301";
 
+const apiPexelsKey = "DrvSF3EywDucDNZEmt8maC5tjDBMBph4cj1kLUuSNElSgATCNwuBhlRR";
+const apiPexelsPath = "https://api.pexels.com/v1/search?query=";
+
 let cities = null;
 
 let favCities = new Array;
@@ -73,6 +76,7 @@ window.addEventListener("load", () => {
     inputField.addEventListener("keydown", async (event) => {
         if (event.key === "Enter") {
             await apiCitySearch(inputField.value);
+            await apitCityPicSearch(inputField.value);
             inputField.value = "";
             inputField.blur();
             return false;
@@ -115,6 +119,12 @@ const apiCitySearch = async (input) => {
     const fetchedData = await fetch(apiWeatherPath + "?key=" + apiWeatherKey + "&q=" + input);
     const parsedData = await fetchedData.json();
     parsedData.error ? displayError(parsedData) : displayWeatherData(parsedData);
+}
+
+const apitCityPicSearch = async (input) => {
+    const fetchedData = await fetch(apiPexelsPath + input, {headers: {Authorization: apiPexelsKey}})
+    const parsedData = await fetchedData.json();
+    parsedData.photos.length === 0 ? displayDefaultCityPic() : displayCityPic(parsedData);
 }
 
 const displayError = (error) => {
@@ -178,4 +188,18 @@ const displayWeatherData = (parsedData) => {
         weatherInfo.setAttribute("id", element.id);
         panelElement.appendChild(weatherInfo);
     });
+}
+
+
+function displayCityPic(obj) {
+    document.querySelector("body").style.background = `url(${getRandomCityPic(obj.photos)})`;
+}
+
+function getRandomCityPic(arr) {
+    let randIndex = Math.floor(Math.random() * arr.length);
+    return arr[randIndex].src.landscape;
+}
+
+function displayDefaultCityPic() {
+    document.querySelector("body").style.background = "url('./xp.jpg')";
 }
