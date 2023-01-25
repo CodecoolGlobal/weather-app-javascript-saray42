@@ -21,6 +21,14 @@ window.addEventListener("load", () => {
     const panelElement = document.createElement("div");
     panelElement.setAttribute("id", "panel");
 
+    const loader = document.createElement("div");
+    const happySun = document.createElement("img");
+    loader.setAttribute("id", "loader");
+    happySun.setAttribute("id", "happy-sun");
+    happySun.setAttribute("src", "./happy_sunCC.png");
+    loader.setAttribute("style", "display: none");
+    loader.appendChild(happySun);
+
     const inputField = document.createElement("input");
     inputField.setAttribute("id", "input-field");
     inputField.setAttribute("type", "text");
@@ -47,9 +55,11 @@ window.addEventListener("load", () => {
     const datalist = document.createElement("datalist");
     datalist.setAttribute("id", "city-list");
 
+    
     rootElement.insertAdjacentElement("beforeend", datalist);
     rootElement.insertAdjacentElement("afterbegin", inputDiv);
     rootElement.insertAdjacentElement("afterbegin", panelElement);
+    document.querySelector("body").insertAdjacentElement("afterbegin", loader);
     
     inputField.addEventListener("input", async () => {
         inputField.value = capitalizeFirstLetter(inputField.value);
@@ -82,6 +92,7 @@ window.addEventListener("load", () => {
 
     inputField.addEventListener("keydown", async (event) => {
         if (event.key === "Enter" && inputField.value.length > 0) {
+            document.querySelector("#loader").setAttribute("style", "display: grid !important");
             await citySearch(inputField.value);
             inputField.value = "";
             inputField.blur();
@@ -147,6 +158,9 @@ const picSearch = async (input) => {
     const fetchedData = await fetch(apiPexelsPath + input, {headers: {Authorization: apiPexelsKey}})
     const parsedData = await fetchedData.json();
     parsedData.error ? windwosXp : parsedData.photos.length === 0 ? windwosXp : displayCityPic(parsedData);
+    setTimeout(() => {
+        document.querySelector("#loader").setAttribute("style", "display: none !important");
+    }, 2000);
 }
 
 const displayCityPic = (obj) => {
