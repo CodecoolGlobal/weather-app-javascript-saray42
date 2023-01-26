@@ -68,7 +68,7 @@ window.addEventListener("load", () => {
         if (inputField.value.length >= 3) {
             await autocomplete(inputField.value);
             removeAllChildNodes(datalist);
-            
+
             cities.map((city) => {        
                 const option = document.createElement("option");
                 option.setAttribute("value", city.name);
@@ -151,7 +151,7 @@ const citySearch = async (input) => {
 }
 
 const picSearch = async (input) => {
-    let windwosXp = document.querySelector("body").style.setProperty("background", "url('./xp.jpg')");
+    let windwosXp = document.querySelector("body").style.setProperty("background", "url('./xp.jpg') center center");
     const fetchedData = await fetch(apiPexelsPath + input, {headers: {Authorization: apiPexelsKey}})
     const parsedData = await fetchedData.json();
     parsedData.error ? windwosXp : parsedData.photos.length === 0 ? windwosXp : displayCityPic(parsedData);
@@ -165,10 +165,11 @@ const displayCityPic = (obj) => {
     const body = document.querySelector("body");
     body.style.setProperty("background", `url(${obj.photos[randIndex].src.landscape}) no-repeat`);
     body.style.setProperty("background-size", "cover");
-    body.style.setProperty("background-position", "center");
+    body.style.setProperty("background-position", "center center");
 }
 
 const displayError = (error) => {
+    document.querySelector("body").style.setProperty("background", "url('./xp.jpg') center center");
     const panelElement = document.querySelector("#panel");
 
     removeAllChildNodes(panelElement);

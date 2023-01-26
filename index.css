@@ -11,13 +11,14 @@
 }
 
 body {
+    transition: 2s;
     height: 100vh;
     width: 100%;
     display: grid;
     grid-template: 1, minmax(0, 1fr) / 1fr;
     place-items: center;
     z-index: 0;
-    background: url(./xp.jpg);
+    background: url(./xp.jpg) center center;
 }
 
 #root {
