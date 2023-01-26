@@ -67,15 +67,12 @@ window.addEventListener("load", () => {
         cities = [];
         if (inputField.value.length >= 3) {
             await autocomplete(inputField.value);
-
-            let existingOpts = Array.from(document.querySelectorAll("option")).map(value => { return value.value });
-
-            cities.map((city) => {
-                if (!existingOpts.includes(city.name)) {
-                    const option = document.createElement("option");
-                    option.setAttribute("value", city.name);
-                    datalist.appendChild(option);
-                }
+            removeAllChildNodes(datalist);
+            
+            cities.map((city) => {        
+                const option = document.createElement("option");
+                option.setAttribute("value", city.name);
+                datalist.appendChild(option);
             });
         } else if (inputField.value === "" || inputField.value.length === 0) {
             mapFavCities();
@@ -164,7 +161,7 @@ const picSearch = async (input) => {
 }
 
 const displayCityPic = (obj) => {
-    const randIndex = Math.round(Math.random() * obj.photos.length);
+    const randIndex = Math.round(Math.random() * (obj.photos.length - 1));
     const body = document.querySelector("body");
     body.style.setProperty("background", `url(${obj.photos[randIndex].src.landscape}) no-repeat`);
     body.style.setProperty("background-size", "cover");
