@@ -1,0 +1,41 @@
+{
+    "location": {
+        "name": "Codecool",
+        "region": "Wien",
+        "country": "Austria",
+        "lat": 48.2,
+        "lon": 16.37,
+        "tz_id": "Europe/Vienna",
+        "localtime_epoch": 1674749011,
+        "localtime": "2023-01-27 10:00"
+    },
+    "current": {
+        "last_updated_epoch": 1674748800,
+        "last_updated": "2023-01-27 09:00",
+        "temp_c": 25.5,
+        "temp_f": 77.9,
+        "is_day": 0,
+        "condition": {
+            "text": "Always Sunny",
+            "icon": "//cdn.weatherapi.com/weather/64x64/day/113.png",
+            "code": 1183
+        },
+        "wind_mph": 7.9,
+        "wind_kph": 12.8,
+        "wind_degree": 360,
+        "wind_dir": "N",
+        "pressure_mb": 1020,
+        "pressure_in": 30.12,
+        "precip_mm": 0,
+        "precip_in": 0,
+        "humidity": 69,
+        "cloud": 100,
+        "feelslike_c": 25.5,
+        "feelslike_f": 77.9,
+        "vis_km": 2,
+        "vis_miles": 1,
+        "uv": 1,
+        "gust_mph": 2.2,
+        "gust_kph": 3.6
+    }
+}
