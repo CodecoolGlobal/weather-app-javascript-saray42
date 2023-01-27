@@ -1,6 +1,6 @@
 "use strict"
 
-import codecoolweather from "./codecoolweather.json" assert { type: "json" };
+let codecoolweather = null;
 
 const apiAutocompPath = "http://api.weatherapi.com/v1/search.json";
 const apiAutoCompKey = "7dec3eb1df3441718f3102729232401";
@@ -20,6 +20,12 @@ let isChrome = navigator.userAgent.match(/chrome|chromium|crios/i);
 const rootElement = document.querySelector("#root");
 
 window.addEventListener("load", () => {
+    fetch("./codecoolweather.json")
+    .then((res) => res.json())
+    .then((data) => {
+        codecoolweather = data;
+    });
+    
     const panelElement = document.createElement("div");
     panelElement.setAttribute("id", "panel");
 
