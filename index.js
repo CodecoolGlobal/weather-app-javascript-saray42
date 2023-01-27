@@ -1,5 +1,7 @@
 "use strict"
 
+import codecoolweather from "./codecoolweather.json" assert { type: "json" };
+
 const apiAutocompPath = "http://api.weatherapi.com/v1/search.json";
 const apiAutoCompKey = "7dec3eb1df3441718f3102729232401";
 
@@ -74,7 +76,7 @@ window.addEventListener("load", () => {
                 option.setAttribute("value", city.name);
                 datalist.appendChild(option);
             });
-        } else if (inputField.value === "" || inputField.value.length === 0) {
+        } else if (inputField.value.length === 0) {
             mapFavCities();
         }
     });
@@ -82,31 +84,35 @@ window.addEventListener("load", () => {
     inputField.addEventListener("focus", () => {
         removeAllChildNodes(datalist);
         cities = [];
-        if (inputField.value === "" || inputField.value.length === 0) {
+        if (inputField.value.length === 0) {
             mapFavCities();
         }
     });
 
     inputField.addEventListener("keydown", async (event) => {
-        if (event.key === "Enter" && inputField.value.length > 0) {
+        if (event.key === "Enter" && inputField.value === "Codecool") {
+            document.querySelector("#loader").setAttribute("style", "display: grid !important");
+            await displayWeatherData(codecoolweather);
+            inputField.value = "";
+            inputField.blur();
+            return false;
+        } else if (event.key === "Enter" && inputField.value.length > 0) {
             document.querySelector("#loader").setAttribute("style", "display: grid !important");
             await citySearch(inputField.value);
             inputField.value = "";
             inputField.blur();
             return false;
-        } else if (event.key === "Backspace" && inputField.value === "") {
+        } else if (event.key === "Backspace" && inputField.value.length === 0) {
             mapFavCities();
         }
     });
 
     favButton.addEventListener("click", () => {
-        let checkForCity = cities.filter((city) => {
-            return (city.name === inputField.value);
+        cities.filter((city) => {
+            if (city.name === inputField.value && !favCities.includes(inputField.value))  {
+                favCities.push(city.name)
+            };
         });
-
-        if (checkForCity.length === 1 && !favCities.includes(inputField.value)) {
-            favCities.push(inputField.value);
-        }
     });
 
     resetButton.addEventListener("click", () => {
@@ -117,7 +123,7 @@ window.addEventListener("load", () => {
     const mapFavCities = () => {
         removeAllChildNodes(datalist);
         cities = [];
-        if (inputField.value === "" || inputField.value.length === 0) {
+        if (inputField.value.length === 0) {
             favCities.map((favCity) => {
                 const option = document.createElement("option");
                 option.setAttribute("value", favCity);
