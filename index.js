@@ -11,7 +11,7 @@ const apiWeatherKey = "6f45d8fb0b634570a17115149232301";
 const apiPexelsKey = "DrvSF3EywDucDNZEmt8maC5tjDBMBph4cj1kLUuSNElSgATCNwuBhlRR";
 const apiPexelsPath = "https://api.pexels.com/v1/search?query=";
 
-let cities = null;
+let cities = new Array;
 
 let favCities = new Array;
 
